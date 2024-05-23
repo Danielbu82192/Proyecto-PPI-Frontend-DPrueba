@@ -20,7 +20,8 @@ function visualizarCoordinador() {
             if (response.ok) {
                 const response2 = await fetch(`https://td-g-production.up.railway.app/equipo-usuarios/Estudiantes/`);
                 const data2 = await response2.json();
-                if (response2.ok) {
+                if (response2.ok) { 
+                    data.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
                     for (const element of data) {
                         const equipo = element.equipocita
                         if (equipo != null) {

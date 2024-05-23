@@ -6,9 +6,10 @@ import { format } from 'date-fns';
 import './css/style.css'
 import CryptoJS from 'crypto-js';
 
-function crear() {
+function crear({ citaPendientes }) {
     const [labelCheck, setLabelCheck] = useState([])
     const [estudiantes, setEstudiantes] = useState([])
+    const [showMasCitas, setShowMasCitas] = useState(false);
     const [tipoCita, setTipoCita] = useState('1')
     const [semanas, setSemanas] = useState([])
     const [showCorrecto, setShowCorrecto] = useState(false);
@@ -16,6 +17,7 @@ function crear() {
     const [showHorasCompletas, setShowHorasCompletas] = useState(false);
     const [estadoCrear, setEstadoCrear] = useState(false)
     const [diaCreacion, setDiaCreacion] = useState('')
+    const [filstroSemana, setFilstroSemana] = useState(false)
     const [diaSemana, setDiaSemana] = useState('');
     const [horas, setHoras] = useState([]);
     const [horasMañana, setHorasMañana] = useState([]);
@@ -31,6 +33,7 @@ function crear() {
     const [horasPendientes, setHorasPendientes] = useState('');
     const [diasConst, setDiasConst] = useState(['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'])
     const [siguienteSemana, setSiguienteSemana] = useState([])
+    const [cantCitasPendientes, setCantCitasPendientes] = useState()
     const diasSemana = {
         'Lunes': 1,
         'Martes': 2,
@@ -365,7 +368,15 @@ function crear() {
             return () => clearTimeout(timer);
         }
     }, [showAlert]);
+
+
     useEffect(() => {
+        setCantCitasPendientes(citaPendientes)
+    }, [citaPendientes]);
+
+
+    useEffect(() => {
+
         calcularNumeroDiaLunes();
         const citasPendientes = async () => {
             const fechaActual = new Date(fechaPruebas);
@@ -429,7 +440,7 @@ function crear() {
             return () => clearTimeout(timer);
         }
     }, [showCorrecto]);
-    
+
     useEffect(() => {
         setDiaNumero([])
         diasConst.map((item, index) => {
@@ -483,12 +494,12 @@ function crear() {
                         <div className=' justify-center  pt-8 flex gap-4" '>
                             <div className='px-2 py-4'>
                                 <input onChange={() => { setTipoCita('1') }} defaultChecked type="radio" id='Virtual' name="Ubicacion" className=" peer hidden" />
-                                <label htmlFor='Virtual' className="labelCheck select-none cursor-pointer rounded-lg border-2 border-green-500 py-3 px-10 font-bold text-green-500 transition-colors duration-200 ease-in-out peer-checked:bg-green-500 peer-checked:text-white peer-checked:border-green-200">Virtual</label>
+                                <label htmlFor='Virtual' className="labelCheck select-none cursor-pointer rounded-lg border-2 border-green-500 py-3 px-10 font-bold text-green-500 transition-colors duration-200 ease-in-out peer-checked:bg-green-500 peer-checked:text-white peer-checked:border-green-500">Virtual</label>
                             </div>
 
                             <div className='px-2 py-4'>
                                 <input onChange={() => { setTipoCita('2') }} type="radio" id='Presencial' name="Ubicacion" className=" peer hidden" />
-                                <label htmlFor='Presencial' className="labelCheck select-none cursor-pointer rounded-lg border-2 border-indigo-500 py-3 px-6 font-bold text-indigo-500 transition-colors duration-200 ease-in-out peer-checked:bg-indigo-500 peer-checked:text-white peer-checked:border-indigo-200">Presencial</label>
+                                <label htmlFor='Presencial' className="labelCheck select-none cursor-pointer rounded-lg border-2 border-indigo-500 py-3 px-6 font-bold text-indigo-500 transition-colors duration-200 ease-in-out peer-checked:bg-indigo-500 peer-checked:text-white peer-checked:border-indigo-500">Presencial</label>
                             </div>
                         </div>
 
@@ -500,8 +511,8 @@ function crear() {
                                 {/* Primer conjunto de días de la semana */}
                                 {diasNumero.map((item, index) => (
                                     <div key={item} className="px-2 py-4">
-                                        <input onChange={(e) => cambiaDia(item, index)} type="radio" id={item} name="dia-semana" className="peer hidden" />
-                                        <label htmlFor={item} className="select-none cursor-pointer rounded-lg border-2 border-blue-500 py-3 px-6 font-bold text-blue-500 transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 peer-checked:text-white peer-checked:border-blue-200">
+                                        <input onChange={(e) => { cambiaDia(item, index); setFilstroSemana(true) }} type="radio" id={item} name="dia-semana" className="peer hidden" />
+                                        <label htmlFor={item} className="select-none cursor-pointer rounded-lg border-2 border-blue-500 py-3 px-6 font-bold text-blue-500 transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 peer-checked:text-white peer-checked:border-blue-500">
                                             {item}
                                         </label>
                                     </div>
@@ -511,8 +522,8 @@ function crear() {
                                 {/* Segundo conjunto de días de la semana */}
                                 {siguienteSemana.map((item, index) => (
                                     <div key={item} className="px-2 py-4">
-                                        <input onChange={(e) => cambiaDia(item, index)} type="radio" id={item} name="dia-semana" className="peer hidden" />
-                                        <label htmlFor={item} className="select-none cursor-pointer rounded-lg border-2 border-blue-500 py-3 px-6 font-bold text-blue-500 transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 peer-checked:text-white peer-checked:border-blue-200">
+                                        <input onChange={(e) => { cambiaDia(item, index); setFilstroSemana(false) }} type="radio" id={item} name="dia-semana" className="peer hidden" />
+                                        <label htmlFor={item} className="select-none cursor-pointer rounded-lg border-2 border-blue-500 py-3 px-6 font-bold text-blue-500 transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 peer-checked:text-white peer-checked:border-blue-500">
                                             {item}
                                         </label>
                                     </div>
@@ -525,7 +536,7 @@ function crear() {
                     <div className='pt-8'>
                         <h1 className='text-3xl font-bold text-center text-gray-600'>Selecciona la hora de la cita:</h1>
 
-                        <div className='mt-5'> 
+                        <div className='mt-5'>
                             <div className='  grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3'>
                                 {horasMañana.length != 0 ? (
                                     <div className='mb-8'>
@@ -541,7 +552,7 @@ function crear() {
                                                     {items.map((item, index) => (
                                                         <div key={item} className='py-4'>
                                                             <input onClick={(e) => seleccionarHora(item)} type="checkbox" id={item} name="dia-semana" className=" peer hidden" />
-                                                            <label htmlFor={item} id={`lb${item}`} className={`${item.split(":")[0]<=9?('sm:px-7 px-5'):('sm:px-6 px-4')} labelCheck select-none cursor-pointer rounded-lg border-2 border-orange-500 sm:py-3 py-2 font-bold text-orange-500 transition-colors duration-200 ease-in-out peer-checked:bg-orange-500 peer-checked:text-white peer-checked:border-orange-200`}>{item}</label>
+                                                            <label htmlFor={item} id={`lb${item}`} className={`${item.split(":")[0] <= 9 ? ('sm:px-7 px-5') : ('sm:px-6 px-4')} labelCheck select-none cursor-pointer rounded-lg border-2 border-amarilloButtons sm:py-3 py-2 font-bold text-amarilloButtons transition-colors duration-200 ease-in-out peer-checked:bg-amarilloButtons peer-checked:text-white peer-checked:border-amarilloButtons`}>{item}</label>
                                                         </div>
                                                     ))}
                                                 </div>
@@ -561,7 +572,7 @@ function crear() {
                                                     {items.map((item, index) => (
                                                         <div key={item} className='py-4'>
                                                             <input onClick={(e) => seleccionarHora(item)} type="checkbox" id={item} name="dia-semana" className=" peer hidden" />
-                                                            <label htmlFor={item} id={`lb${item}`} className={`sm:px-6 px-4 labelCheck select-none cursor-pointer rounded-lg border-2 border-orange-500 sm:py-3 py-2 font-bold text-orange-500 transition-colors duration-200 ease-in-out peer-checked:bg-orange-500 peer-checked:text-white peer-checked:border-orange-200`}>{item}</label>
+                                                            <label htmlFor={item} id={`lb${item}`} className={`sm:px-6 px-4 labelCheck select-none cursor-pointer rounded-lg border-2 border-orange-500 sm:py-3 py-2 font-bold text-orange-500 transition-colors duration-200 ease-in-out peer-checked:bg-orange-500 peer-checked:text-white peer-checked:border-orange-500`}>{item}</label>
                                                         </div>
                                                     ))}
                                                 </div>
@@ -586,7 +597,7 @@ function crear() {
                                                     {items.map((item, index) => (
                                                         <div key={item} className='py-4'>
                                                             <input onClick={(e) => seleccionarHora(item)} type="checkbox" id={item} name="dia-semana" className=" peer hidden" />
-                                                            <label htmlFor={item} id={`lb${item}`} className="labelCheck select-none cursor-pointer rounded-lg border-2 border-primari sm:py-3 py-2 sm:px-6 px-4 font-bold text-primari transition-colors duration-200 ease-in-out peer-checked:bg-primari peer-checked:text-white peer-checked:border-green-200">{item}</label>
+                                                            <label htmlFor={item} id={`lb${item}`} className="labelCheck select-none cursor-pointer rounded-lg border-2 border-sky-800 sm:py-3 py-2 sm:px-6 px-4 font-bold text-sky-800 transition-colors duration-200 ease-in-out peer-checked:bg-sky-800 peer-checked:text-white peer-checked:border-sky-800">{item}</label>
                                                         </div>
                                                     ))}
                                                 </div>
@@ -599,11 +610,31 @@ function crear() {
                         </div>
                     </div>
                     {estadoCrear ? (<div className='mt-5'>
-                        <button onClick={() => { crearCitas() }} class="text-white py-2 px-4 w-full rounded bg-green-400 hover:bg-green-500 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5">Crear</button>
+                        <button onClick={() => { if ((cantCitasPendientes - horaSeleccionadas.length < 0)&&filstroSemana) setShowMasCitas(true); else crearCitas() }} class="text-white py-2 px-4 w-full rounded bg-green-400 hover:bg-green-500 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5">Crear</button>
                     </div>) : null}
 
                 </>)
             }
+
+            {showMasCitas && (<>
+                <div className="fixed inset-0 z-10 bg-grey bg-opacity-10 backdrop-blur-sm flex justify-center items-center">
+                    <div class="flex flex-col justify-center content-center items-center rounded-lg bg-white p-4 shadow-2xl min-w-[50vw] max-w-[50vw] border border-solid border-gray-300">
+                        <h2 class="text-lg font-bold">Estás reservando citas adicionales</h2>
+                        <p class="mt-2 text-sm text-gray-800">
+                            Estás reservando {horaSeleccionadas.length - cantCitasPendientes} citas adicionales.
+                        </p>
+                        <div class="mt-4 flex flex-row flex-wrap min-w-full items-center content-center justify-center gap-2">
+                            <button type="button" class="min-w-[25%] rounded-lg bg-green-200 px-4 py-2 text-sm font-medium text-green-600" onClick={() => { crearCitas(); setShowMasCitas(false) }}>
+                                Confirmar
+                            </button>
+                            <button type="button" class="min-w-[25%] rounded-lg bg-red-200 px-4 py-2 text-sm font-medium text-red-600" onClick={() => setShowMasCitas(false)}>
+                                Cancelar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </>
+            )}
 
             {
                 showAlert && (

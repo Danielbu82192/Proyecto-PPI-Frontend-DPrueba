@@ -11,6 +11,7 @@ module.exports = {
     extend: {
       colors: {
         "primari": "#046132",
+        "amarilloButtons":"#FAB816"
       }
     },
   },

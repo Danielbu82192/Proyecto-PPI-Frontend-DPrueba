@@ -48,7 +48,8 @@ function miBitacora() {
                 setEstudiantes(data2);
                 const response = await fetch('https://td-g-production.up.railway.app/seguimiento-ppi/' + bitacora.codigoEquipo);
                 const data = await response.json();
-                if (response.ok) {
+                if (response.ok) { 
+                    data.sort((a, b) => a.semana - b.semana);
                     setSeguimiento(data);
                 }
             }
@@ -117,7 +118,7 @@ function miBitacora() {
                                     }
                                 </div>
                             </div>
-                            <div className="pt-5 sm:pb-0">
+                            <div className="pt-5 sm:pt-0">
                                 <span className="text-2xl font-bold text-gray-600">Módulo sol:</span>
                                 <div className="ml-5 sm:ml-10 mt-2 text-xl text-gray-400">
                                     {modSol.nombre}
@@ -134,7 +135,7 @@ function miBitacora() {
                                     {bitacora.descripcion}
                                 </div>
                             </div>
-                            <div className="pt-5 sm:pb-0">
+                            <div className="pt-5 sm:pt-0">
                                 <span className="text-2xl font-bold text-gray-600">Alcance:</span>
                                 <div className="ml-5 sm:ml-10 mt-2 text-xl text-gray-400">
                                     {bitacora.alcance}
@@ -151,7 +152,7 @@ function miBitacora() {
                                     {bitacora.socializacionuno}
                                 </div>
                             </div>
-                            <div className="pt-5 sm:pb-0">
+                            <div className="pt-5 sm:pt-0">
                                 <span className="text-2xl font-bold text-gray-600">Alcance Socialización 2:</span>
                                 <div className="ml-5 sm:ml-10 mt-2 text-xl text-gray-400">
                                     {bitacora.socializaciondos}

@@ -196,6 +196,7 @@ function page({ params }) {
             const response2 = await fetch('https://td-g-production.up.railway.app/citas-asesoria-ppi/asesor/' + params.id);
             const data2 = await response2.json()
             if (response2.ok) {
+                data2.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
                 const auxiliar = []
                 const fechaInicio = new Date(fechaSelec.fechaInicio)
                 const fechaFin = new Date(fechaSelec.fechaFin)
@@ -208,7 +209,20 @@ function page({ params }) {
                 for (let index = 0; index < data2.length; index++) {
                     const element = data2[index];
                     data2[index]["dia"] = format(element.fecha, 'EEEE dd', { locale: es })
+                    for (let index2 = 0; index2 < data3.length; index2++) {
+                        const item = data3[index2];
+                        const fecha = new Date(element.fecha)
+                        const fechaInicio = new Date(item.fechaInicio)
+                        const fechaFin = new Date(item.fechaFin)
+                        if (fechaInicio < fecha && fechaFin > fecha) {
+                            data2[index]["semana"] = (item.numeroSemana)
+                        }
+                    }
                 }
+
+
+                ////88888
+                console.log(data2)
                 setCitas(data2)
                 setAuxCitas(auxiliar)
                 setAuxCitasSemanas(data2)
@@ -370,19 +384,9 @@ function page({ params }) {
                                                 equipo = estudiantes[item.equipocita.codigoEquipo]
                                             }
                                             if (index >= currentPage * 10 && index < (currentPage + 1) * 10) {
-                                                let numeroSeman = 0;
-                                                for (let index = 0; index < semana.length; index++) {
-                                                    const element = semana[index];
-                                                    const fecha = new Date(item.fecha)
-                                                    const fechaInicio = new Date(element.fechaInicio)
-                                                    const fechaFin = new Date(element.fechaFin)
-                                                    if (fechaInicio < fecha && fechaFin > fecha) (
-                                                        numeroSeman = (element.numeroSemana)
-                                                    )
-                                                }
                                                 return (
                                                     <tr key={item.id}>
-                                                        <td className="whitespace-nowrap px-4 py-2 font-semibold text-center text-gray-500">{numeroSeman}</td>
+                                                        <td className="whitespace-nowrap px-4 py-2 font-semibold text-center text-gray-500">{item.semana}</td>
                                                         <td className="whitespace-nowrap px-4 py-2 font-semibold text-center text-gray-500"> {capitalizeFirstLetter(item.dia)}</td>
                                                         <td className="whitespace-normal text-center font-semibold px-4 py-2 text-gray-500">{item.hora.split(':')[0]}:{item.hora.split(':')[1]} </td>
                                                         <td className="whitespace-nowrap px-4 py-2 font-semibold text-gray-400 text-center">

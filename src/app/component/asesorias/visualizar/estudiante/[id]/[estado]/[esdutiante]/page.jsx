@@ -96,15 +96,15 @@ function page({ params }) {
 
     const cancelarCita = async (id, idCalendar, causeInput) => {
 
-        const fechaActual = new Date(fechaPruebas) 
+        const fechaActual = new Date(fechaPruebas)
         if (fechaActual.getDate() == fecha.split("/")[0]) {
             const horaCita = (parseInt(hora.split(":")[0]) * 60) + parseInt(hora.split(":")[1])
-            const horaActual = (parseInt(fechaActual.getHours()+2) * 60) + parseInt(fechaActual.getMinutes())
+            const horaActual = (parseInt(fechaActual.getHours() + 2) * 60) + parseInt(fechaActual.getMinutes())
             if (horaCita - horaActual < 0) {
                 setShowNoCancelar(true)
                 return
             }
-        } 
+        }
         const dataCrearMeet = {
             "eventId": idCalendar,
             "cause": causeInput
@@ -214,7 +214,7 @@ function page({ params }) {
         <>
             <div className="ml-6 mr-6 mt-6 border   bg-white border-b flex justify-between">
                 <div className='pt-8  pb-8 w-full'>
-                  <div className='w-full border-b-2 flex items-center sm:items-start justify-center sm:justify-start sm:pl-8 sm:h-22 pb-5 text-center sm:text-left'>
+                    <div className='w-full border-b-2 flex items-center sm:items-start justify-center sm:justify-start sm:pl-8 sm:h-22 pb-5 text-center sm:text-left'>
                         <h1 className='text-4xl font-bold text-gray-600'>Cita de asesorías</h1>
                     </div>
                     <div className='p-5'>
@@ -301,14 +301,14 @@ function page({ params }) {
                                 </div>
                             ) : (<div className='pb-5'></div>)
                             }
-                            {showAlertDelete && (<>
+                            {showAlertDelete && (
                                 <div className="fixed inset-0 z-10 bg-grey bg-opacity-10 backdrop-blur-sm flex justify-center items-center">
-                                    <div class="flex flex-col justify-center content-center items-center rounded-lg bg-white p-4 shadow-2xl min-w-[50vw] max-w-[50vw] border border-solid border-gray-300">
-                                        <h2 class="text-lg font-bold">¿Deseas cancelar esta cita?</h2>
-                                        <p class="mt-2 text-sm text-gray-800">
+                                    <div className="flex flex-col justify-center content-center items-center rounded-lg bg-white p-4 shadow-2xl w-11/12 sm:w-3/4 md:w-2/3 lg:w-1/2 xl:w-1/3 border border-solid border-gray-300">
+                                        <h2 className="text-lg font-bold">¿Deseas cancelar esta cita?</h2>
+                                        <p className="mt-2 text-sm text-gray-800">
                                             Por favor indique el motivo de cancelación (Obligatorio).
                                         </p>
-                                        <select name="" id="causes">
+                                        <select name="" id="causes" className="mt-2 w-full">
                                             <option value="Nothing">Seleccione un motivo</option>
                                             {cancelCauses.map((cancelCause, index) => (
                                                 <option key={index} value={cancelCause}>{cancelCause}</option>
@@ -324,8 +324,8 @@ function page({ params }) {
                                         </div>
                                     </div>
                                 </div>
-                            </>
                             )}
+
                         </div>
                     </div>
                 </div>

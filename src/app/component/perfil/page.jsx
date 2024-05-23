@@ -62,7 +62,7 @@ function page() {
         <><div className="p-16">
             <div className="p-8 bg-white shadow mt-24">
                 <div className="grid grid-cols-1 md:grid-cols-3">
-                    <div className="grid grid-cols-1 sm:grid-cols-3 text-center sm:text-left order-last md:order-first mt-20 md:mt-0">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 text-center sm:text-left order-last md:order-first mt-20 md:mt-0">
                         {rol.id == 1 ? (
                             <div className="flex flex-col items-center sm:items-start">
                                 <p className="font-bold text-gray-700 text-xl">101</p>
@@ -70,16 +70,17 @@ function page() {
                             </div>
                         ) : rol.id == 3 ? (
                             <>
-                                <div className="flex flex-col items-center sm:items-start">
-                                    <p className="font-bold text-gray-700 text-xl">{usuarioNest.hora[0].horasAsignadas}</p>
+                                <div className="flex flex-col sm:text-center   items-center sm:items-start">
+                                    <p className="font-bold sm:ml-3 text-gray-700 text-xl">{usuarioNest.hora[0].horasAsignadas}</p>
                                     <p className="text-gray-400">Horas</p>
                                 </div>
-                                <div className="flex flex-col items-center sm:items-start">
-                                    <p className="font-bold text-gray-700 text-xl">
-                                        {oficina.length == 0 ? usuarioNest.hora[0].salon : oficina}
+                                <div className="flex text-center flex-col items-center sm:items-start">
+                                    <p className="font-bold sm:-ml-3 text-gray-700 text-xl">
+                                        {oficina.length === 0 ? usuarioNest.hora[0].salon : oficina}
                                     </p>
                                     <p className="text-gray-400">Oficina</p>
                                 </div>
+
                             </>
                         ) : null}
                     </div>

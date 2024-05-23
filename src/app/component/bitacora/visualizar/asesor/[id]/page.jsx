@@ -68,11 +68,27 @@ function page({ params }) {
                 body: JSON.stringify(dato)
             };
             const response = await fetch('https://td-g-production.up.railway.app/estado-seguimiento-cambio/' + idEstado, requestOptions);
-            if (response.ok) {
-                setShowCorrecto2(true);
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2000);
+            if (response.ok) { 
+                const response2 = await fetch('https://td-g-production.up.railway.app/citas-asesoria-ppi/Seguimiento/' + id);
+                const data2 = await response2.json();
+                if (!response2.ok) { 
+                    return
+                }
+                const dato = {
+                    "estadoCita": 3
+                }
+                const requestOptions = {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dato)
+                };
+                const response = await fetch('https://td-g-production.up.railway.app/citas-asesoria-ppi/' + data2.id, requestOptions);
+                if (response.ok) {
+                    setShowCorrecto2(true);
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
+                }
             }
         }
 
@@ -124,6 +140,7 @@ function page({ params }) {
                     const response = await fetch('https://td-g-production.up.railway.app/seguimiento-ppi/' + bitacora.codigoEquipo);
                     const data = await response.json();
                     if (response.ok) {
+                        data.sort((a, b) => a.semana - b.semana); 
                         setSeguimiento(data);
                     }
                 }
@@ -221,7 +238,7 @@ function page({ params }) {
                                     </div>
                                 </div>
                             </div>
-                        </div> 
+                        </div>
                         <div className="pb-5">
                             <div className="grid grid-cols-1 sm:grid-cols-2">
                                 <div>
@@ -230,7 +247,7 @@ function page({ params }) {
                                         {bitacora.descripcion}
                                     </div>
                                 </div>
-                                <div className="mt-4 sm:mt-0"> 
+                                <div className="mt-4 sm:mt-0">
                                     <span className="text-2xl font-bold text-gray-600">Alcance:</span>
                                     <div className="ml-5 sm:ml-10 mt-2 text-xl text-gray-400">
                                         {bitacora.alcance}

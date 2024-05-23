@@ -94,7 +94,7 @@ function page() {
                         }
                     }
                 }
- 
+
             } catch (error) {
                 setSemanaSeleccionada()
             }
@@ -102,7 +102,7 @@ function page() {
 
         obtenerHorasPendientes();
         cargarsemana()
-    }, [ ]);
+    }, []);
     return (
         <div className="ml-6 mr-6 mt-6 border   bg-white border-b flex justify-between">
             <div className='pt-8  pb-8 w-full'>
@@ -125,7 +125,7 @@ function page() {
                 </div>
 
                 <div className='p-10'>
-                    <Crear />
+                   <Crear citaPendientes={horasPendientes} />
                 </div>
             </div>
         </div >

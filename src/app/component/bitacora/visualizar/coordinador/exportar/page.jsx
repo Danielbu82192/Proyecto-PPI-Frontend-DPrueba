@@ -9,9 +9,10 @@ import { useRouter } from "next/navigation";
 function page() {
 
     const [equipo, setEquipo] = useState([])
-    const [selectExport, setSelectExport] = useState([])
+    const [selectExport, setSelectExport] = useState(-1)
     const router = useRouter();
     const exportarBitacora = async () => {
+        alert('https://td-g-production.up.railway.app/equipo-ppi/exportar/' + selectExport)
         const response = await fetch('https://td-g-production.up.railway.app/equipo-ppi/exportar/' + selectExport);
         const filePath = await response.text()
         const baseUrl = 'https://td-g-production.up.railway.app';
@@ -28,13 +29,12 @@ function page() {
 
     }
 
-    const exportarCitasAsesores = async () => {
-        const response = await fetch('https://td-g-production.up.railway.app/equipo-ppi/exportar/' + selectExport);
+    const exportarCitasAsesores = async () => { 
+        const response = await fetch('https://td-g-production.up.railway.app/hora-semanal/exportar/');
         const filePath = await response.text()
         const baseUrl = 'https://td-g-production.up.railway.app';
-        const fileUrl = new URL(filePath.replace('/public', ''), baseUrl).href;
-        const newWindow = window.open(fileUrl, '_blank');
-
+        const fileUrl = new URL(filePath.replace('/public', ''), baseUrl).href; 
+        const newWindow = window.open(fileUrl, '_blank'); 
         if (newWindow) {
             setTimeout(() => {
                 newWindow.close();

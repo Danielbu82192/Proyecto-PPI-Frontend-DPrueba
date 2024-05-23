@@ -47,7 +47,7 @@ function Page() {
 
     useEffect(() => {
         const fetchEquipoUsuarios = async () => {
-
+ 
             const usuarioNest = localStorage.getItem('U2FsdGVkX1');
             const bytes = CryptoJS.AES.decrypt(usuarioNest, 'PPIITYTPIJC');
             const NestOriginal = JSON.parse(bytes.toString(CryptoJS.enc.Utf8)) 

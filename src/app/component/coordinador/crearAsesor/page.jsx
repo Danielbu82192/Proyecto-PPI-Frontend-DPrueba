@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import './Page.css';
+import './page.css';
 //import Dialog from '@mui/material/Dialog';
 
 const Page = () => {

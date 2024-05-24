@@ -4,7 +4,7 @@ FROM node:latest
 # Establece el directorio de trabajo en /app
 WORKDIR /app
 
-# Copia el archivo package.json y package-lock.json (si existe) al directorio de trabajo
+# Copia el archivo package.json y package-lock.json (si exist) al directorio de trabajo
 COPY package*.json ./
 
 # Instala las dependencias del proyect

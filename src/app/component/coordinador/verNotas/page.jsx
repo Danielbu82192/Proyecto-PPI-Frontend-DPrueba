@@ -97,17 +97,21 @@ function Page() {
                     calificacionesUsuarios[idUsuario] = calificaciones;
                 })
             );
-            // Actualizar la tabla con las calificaciones
             setEquiposConNotas((prevState) => {
                 return Object.keys(prevState).reduce((acc, codigoEquipo) => {
                     acc[codigoEquipo] = prevState[codigoEquipo].map((integrante) => {
-                        // Obtener las calificaciones del usuario
                         const calificacionesUsuario = calificacionesUsuarios[integrante.Usuario_ID] || [];
-                        // Mapear sobre las calificaciones y asignarlas a la tabla
+                        let definitiva = 0;
                         calificacionesUsuario.forEach((calificacion) => {
                             const entregaID = calificacion.entrega;
+                            const porcentaje = entregas.find(entrega => entrega.id === entregaID)?.Porcentaje_Entrega || 0;
+                            definitiva += (calificacion.calificacion) * (porcentaje / 100);
                             integrante[entregaID] = calificacion.calificacion;
                         });
+                        const notaAsesorias = parseFloat(integrante.Nota_Asesoria_Definitiva_Individual) || 0;
+                        const porcentajeAsesorias = entregas.find(entrega => entrega.id === 8)?.Porcentaje_Entrega || 0;
+                        definitiva += (notaAsesorias) * (porcentajeAsesorias / 100);
+                        integrante.Definitiva = definitiva.toFixed(2); // Asignar la calificación definitiva
                         return integrante;
                     });
                     return acc;
@@ -118,11 +122,11 @@ function Page() {
         if (Object.keys(usuarios).length > 0) {
             asignarCalificaciones();
         }
-    }, [usuarios]);
+    }, [usuarios, entregas]);
 
     return (
         <div className="ml-2 mr-6 mt-6 border bg-white border-b">
-            <div className='pt-8 pb-8 w-full text-center'> 
+            <div className='pt-8 pb-8 w-full text-center'>
                 <div className='pt-5 w-full border-b-2 flex items-center sm:items-start justify-center sm:justify-start sm:pl-8 sm:h-22 pb-5 text-center sm:text-left'>
                     <h1 className='text-4xl font-bold text-gray-600'>Tabla de Notas</h1>
                 </div>
@@ -150,6 +154,7 @@ function Page() {
                                                 {entrega.nombre} ({entrega.Porcentaje_Entrega}%)
                                             </th>
                                         ))}
+                                        <th className="border text-sm border-gray-300 px-2 py-1">Definitiva (100%)</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -174,6 +179,7 @@ function Page() {
                                                                 {entrega.id === 8 ? integrante.Nota_Asesoria_Definitiva_Individual : integrante[entrega.id]}
                                                             </td>
                                                         ))}
+                                                        <td className="border border-gray-300 text-sm px-4 py-2">{integrante.Definitiva}</td>
                                                     </tr>
                                                 );
                                             })}

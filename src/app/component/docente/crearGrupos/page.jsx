@@ -450,8 +450,8 @@ function GrupoDetail({ grupo, setSelectedGrupo }) {
         </div>
         <div className='p-10'>
           <div className="flex items-center mb-4">
-          Numere los integrantes de un mismo equipo, por ejemplo:<br />
-          Estudiantes A, B, C como Equipo 1.<br />Estudiantes D, E, F como Equipo 2.
+            Numere los integrantes de un mismo equipo, por ejemplo:<br />
+            Estudiantes A, B, C como Equipo 1.<br />Estudiantes D, E, F como Equipo 2.
           </div>
           {error && <div className="text-red-500 mb-4">{error}</div>}
           <table className="min-w-full bg-white border border-collapse">
@@ -587,19 +587,19 @@ function GrupoDetail({ grupo, setSelectedGrupo }) {
               onClick={handleSaveTable}
               className="bg-green-500 text-white py-2 px-4 rounded mr-2"
             >
-              Guardar tabla
+              Guardar Tabla
             </button>
             <button
               onClick={handleReportTeams}
               className="bg-red-800 text-white py-2 px-4 rounded"
             >
-              Reportar equipos
+              Reportar Equipos
             </button>
           </div>
           {showPopup && (
             <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-500 bg-opacity-50">
               <div className="bg-white p-6 rounded shadow-md">
-                <p className="mb-4">¿Estás seguro de tener los equipos listos?</p>
+                <p className="mb-4">Una vez reportados los equipos, no tendrás forma realizar modificaciones. ¿Estás seguro de querer reportar los equipos?</p>
                 <div className="flex justify-center">
                   <button
                     onClick={() => handleConfirm(true)}

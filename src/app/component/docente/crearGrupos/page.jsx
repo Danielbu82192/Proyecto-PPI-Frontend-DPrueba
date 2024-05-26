@@ -12,12 +12,12 @@ function Page() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        
+
         const usuarioNest = localStorage.getItem('U2FsdGVkX1');
         const bytes = CryptoJS.AES.decrypt(usuarioNest, 'PPIITYTPIJC');
         const NestOriginal = JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
         const asignaturasResponse = await fetch(
-          "https://td-g-production.up.railway.app/usuario-asignatura/GroupsDocente/"+NestOriginal.id
+          "https://td-g-production.up.railway.app/usuario-asignatura/GroupsDocente/" + NestOriginal.id
         ).then((res) => res.json());
         setAsignaturas(asignaturasResponse);
         setLoading(false);
@@ -450,16 +450,17 @@ function GrupoDetail({ grupo, setSelectedGrupo }) {
         </div>
         <div className='p-10'>
           <div className="flex items-center mb-4">
-
+          Numere los integrantes de un mismo equipo, por ejemplo:<br />
+          Estudiantes A, B, C como Equipo 1.<br />Estudiantes D, E, F como Equipo 2.
           </div>
           {error && <div className="text-red-500 mb-4">{error}</div>}
           <table className="min-w-full bg-white border border-collapse">
             <thead>
               <tr>
                 <th className="py-1 px-2 border">Cédula</th>
-                <th className="py-1 px-2 border">Nombre</th>
+                <th className="py-1 px-2 border">Estudiante</th>
                 <th className="py-1 px-2 border" style={{ width: "20%" }}>
-                  Equipo
+                  Numeración de Equipos
                   <svg
                     onClick={handleSort}
                     xmlns="http://www.w3.org/2000/svg"
@@ -470,34 +471,9 @@ function GrupoDetail({ grupo, setSelectedGrupo }) {
                     fill="none"
                     className="cursor-pointer inline-block ml-1"
                   >
-                    <path
-                      d="M3 9L14 9.00008"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M3 15H10"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M3 3H19"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M18.521V9M18.5 21C17.7998 21 16.4915 19.0057 16 18.5M18.5 21C19.2002 21 20.5085 19.0057 21 18.5"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
+                    <path d="M6 20L18 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                    <path d="M12 16V4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M16 12C16 12 13.054 16 12 16C10.9459 16 8 12 8 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                   </svg>
                 </th>
               </tr>

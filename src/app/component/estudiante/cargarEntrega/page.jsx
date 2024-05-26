@@ -47,12 +47,12 @@ function Page() {
 
     useEffect(() => {
         const fetchEquipoUsuarios = async () => {
- 
+
             const usuarioNest = localStorage.getItem('U2FsdGVkX1');
             const bytes = CryptoJS.AES.decrypt(usuarioNest, 'PPIITYTPIJC');
-            const NestOriginal = JSON.parse(bytes.toString(CryptoJS.enc.Utf8)) 
+            const NestOriginal = JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
             try {
-                const response = await fetch('https://td-g-production.up.railway.app/equipo-usuarios/GetGroupById/'+NestOriginal.id);
+                const response = await fetch('https://td-g-production.up.railway.app/equipo-usuarios/GetGroupById/' + NestOriginal.id);
                 if (response.ok) {
                     const data = await response.json();
                     setEquipoUsuarios(data);
@@ -102,8 +102,9 @@ function Page() {
                 if (response.ok) {
                     const data = await response.json();
                     const newData = data.map((item, index) => ({ ...item, configuracionEntregaId: item.Configuracion_Entrega_ID }));
-                    // Excluir el tipo de entrega con ID 8
-                    const filteredData = newData.filter(item => item.id !== 8);
+                    // Excluir los tipos de entrega con ID 8 y 9
+                    const filteredData = newData.filter(item => item.id !== 8 && item.id !== 9);
+
                     setEntregaSettings(filteredData);
                 } else {
                     setEntregaSettings([]);

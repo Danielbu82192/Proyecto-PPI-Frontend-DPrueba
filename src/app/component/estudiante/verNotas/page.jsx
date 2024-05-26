@@ -8,7 +8,6 @@ import CryptoJS from 'crypto-js';
 function Page() {
     const [equipoUsuarios, setEquipoUsuarios] = useState([]);
     const [bitacora, setBitacora] = useState([]);
-    const [usuarioActual,setUsuaarioACtual]=useState()
     const [entregaSettings, setEntregaSettings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [notaAsesoriaDefinitiva, setNotaAsesoriaDefinitiva] = useState(null);
@@ -21,18 +20,15 @@ function Page() {
     useEffect(() => {
         const fetchEquipoUsuarios = async () => {
             try {
-
                 const usuarioNest = localStorage.getItem('U2FsdGVkX1');
                 const bytes = CryptoJS.AES.decrypt(usuarioNest, 'PPIITYTPIJC');
                 const NestOriginal = JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
-                setUsuaarioACtual(NestOriginal)
-                const response = await fetch('https://td-g-production.up.railway.app/equipo-usuarios/GetGroupById/'+NestOriginal.id);
+                const response = await fetch('https://td-g-production.up.railway.app/equipo-usuarios/GetGroupById/' + NestOriginal.id);
                 if (response.ok) {
                     const data = await response.json();
                     setEquipoUsuarios(data);
                     const notaAsesoriaDefinitiva = data.length > 0 ? data[0].Nota_Asesoria_Definitiva_Individual : null;
                     setNotaAsesoriaDefinitiva(notaAsesoriaDefinitiva);
-                    console.log("Nota Asesoría Definitiva Individual:", notaAsesoriaDefinitiva);
                 } else {
                     setEquipoUsuarios([]);
                 }
@@ -94,7 +90,10 @@ function Page() {
     useEffect(() => {
         const fetchCalificacionesUsuario = async () => {
             try {
-                const response = await fetch('https://backend.dbcpolijic2024.online/usuario-calificacion/'+usuarioActual.id);
+                const usuarioNest = localStorage.getItem('U2FsdGVkX1');
+                const bytes = CryptoJS.AES.decrypt(usuarioNest, 'PPIITYTPIJC');
+                const NestOriginal = JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
+                const response = await fetch('https://backend.dbcpolijic2024.online/usuario-calificacion/' + NestOriginal.id);
                 if (response.ok) {
                     const data = await response.json();
                     setCalificacionesUsuario(data);

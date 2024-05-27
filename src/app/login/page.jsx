@@ -45,6 +45,7 @@ function page() {
             const response2 = await fetch('https://td-g-production.up.railway.app/usuario/correos/' + datosGoogle.email);
             const usuario = await response2.json();
             console.log(usuario)
+            return
             if (response2.ok && usuario.length != 0) {
                 const googleCifrado = CryptoJS.AES.encrypt(JSON.stringify(datosGoogle), 'PPIITYTPIJC').toString();
                 const nestCifrado = CryptoJS.AES.encrypt(JSON.stringify(usuario), 'PPIITYTPIJC').toString();

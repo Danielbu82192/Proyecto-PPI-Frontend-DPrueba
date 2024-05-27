@@ -264,7 +264,7 @@ export default function page() {
                 /*date: string, dateTime: string, attendees: string[], conferenceDataVersion: string*/
 
                 const fechaMeet = new Date(fechaPruebas)
-                fechaMeet.setDate(fechaMeet.getDate() - fechaMeet.getDay() + 1);
+                fechaMeet.setDate(fechaMeet.getDate() - fechaMeet.getDay());
                 fechaMeet.setDate(fechaMeet.getDate() + fechaSeleccionada)
                 let Tcita = 1;
                 if (tipoCita == "Presencial") {
@@ -322,7 +322,7 @@ export default function page() {
                 if (responseCita.ok) {
                     const fechaActual = new Date(fechaPruebas);
                     const fechaLunes = new Date(fechaActual);
-                    fechaActual.setDate(fechaActual.getDate() - fechaActual.getDay() + 1 + fechaSeleccionada);
+                    fechaActual.setDate(fechaActual.getDate() - fechaActual.getDay() + fechaSeleccionada);
                     let numSemana = 0
                     for (let i = 0; i < semanas.length; i++) {
                         const semana = semanas[i];
@@ -343,7 +343,7 @@ export default function page() {
                         const name = "estudiante" + (index + 1);
                         datosSeguimiento[name] = element.id
                     });
-
+                    console.log(datosSeguimiento)
                     const requestOptionsSeguimiento = {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -353,6 +353,7 @@ export default function page() {
                     if (responseSeguimiento.ok) {
                         setEstadoAgendar(false);
                         setShowCorrecto(true);
+                        return
                         setTimeout(() => {
                             window.location.reload();
                         }, 2000);
@@ -434,43 +435,48 @@ export default function page() {
     }, [showNoEqupo]);
     useEffect(() => {
         const traerCitasEquipo = async () => {
-            setEstadoAgendar(false)
-            const fechaActual = new Date(fechaPruebas);
-            const fechaLunes = new Date(fechaActual);
-            const fechaSabado = new Date(fechaActual); // Clona la fecha actual
-            fechaLunes.setDate(fechaActual.getDate() - fechaActual.getDay() + 1);
-            fechaSabado.setDate(fechaActual.getDate() - (fechaActual.getDay() - 6));
-            const fechaInicio = format(fechaLunes, 'yyyy-MM-dd');
-            const fechaFin = format(fechaSabado, 'yyyy-MM-dd');
-            const usuarioNest = localStorage.getItem('U2FsdGVkX1');
-            const bytes = CryptoJS.AES.decrypt(usuarioNest, 'PPIITYTPIJC');
-            const usuarioN = JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
-            const responseEquipo = await fetch('https://td-g-production.up.railway.app/equipo-ppi/GetBitacoraByCode/' + usuarioN.usuario[0].codigoEquipo);
-            if (!responseEquipo.ok) {
-                return;
-            }
-            const dataEquipo = await responseEquipo.json()
-            const response = await fetch(`https://td-g-production.up.railway.app/citas-asesoria-ppi/EquipoFecha/${fechaInicio}/${fechaFin}/${dataEquipo[0].Bitacora_PPI_ID}`);
-            const data = await response.json();
-            if (response.ok) {
-                if (data.length == 0) {
-                    setSegundaAsesoria(false);
-                    setEstadoPedirCita(true);
-                } else {
-                    if (data.length == 2) {
+            try {
+                setEstadoAgendar(false)
+                const fechaActual = new Date(fechaPruebas);
+                const fechaLunes = new Date(fechaActual);
+                const fechaSabado = new Date(fechaActual); // Clona la fecha actual
+                fechaLunes.setDate(fechaActual.getDate() - fechaActual.getDay() + 1);
+                fechaSabado.setDate(fechaActual.getDate() - (fechaActual.getDay() - 6));
+                const fechaInicio = format(fechaLunes, 'yyyy-MM-dd');
+                const fechaFin = format(fechaSabado, 'yyyy-MM-dd');
+                const usuarioNest = localStorage.getItem('U2FsdGVkX1');
+                const bytes = CryptoJS.AES.decrypt(usuarioNest, 'PPIITYTPIJC');
+                const usuarioN = JSON.parse(bytes.toString(CryptoJS.enc.Utf8))
+                const responseEquipo = await fetch('https://td-g-production.up.railway.app/equipo-ppi/GetBitacoraByCode/' + usuarioN.usuario[0].codigoEquipo);
+                if (!responseEquipo.ok) {
+                    return;
+                }
+                const dataEquipo = await responseEquipo.json()
+                const response = await fetch(`https://td-g-production.up.railway.app/citas-asesoria-ppi/EquipoFecha/${fechaInicio}/${fechaFin}/${dataEquipo[0].Bitacora_PPI_ID}`);
+                const data = await response.json();
+                if (response.ok) {
+                    if (data.length == 0) {
                         setSegundaAsesoria(false);
-                        setEstadoPedirCita(false);
-                    } else if (data.length == 1) {
-                        setSegundaAsesoria(true);
                         setEstadoPedirCita(true);
-                        setCitasEquipo(data);
                     } else {
-                        setSegundaAsesoria(false);
-                        setCitasEquipo(data);
-                        setEstadoPedirCita(false);
+                        if (data.length == 2) {
+                            setSegundaAsesoria(false);
+                            setEstadoPedirCita(false);
+                        } else if (data.length == 1) {
+                            setSegundaAsesoria(true);
+                            setEstadoPedirCita(true);
+                            setCitasEquipo(data);
+                        } else {
+                            setSegundaAsesoria(false);
+                            setCitasEquipo(data);
+                            setEstadoPedirCita(false);
+                        }
                     }
                 }
+            } catch (e) {
+                setShowNoEqupo(true)
             }
+
         }
         traerCitasEquipo();
     }, []);
@@ -523,32 +529,32 @@ export default function page() {
                                         <div className='px-2 py-4'>
                                             <input onChange={(e) => { cargarHoras(0) }} type="radio" id='Lunes' name="dia-semana" className="peer hidden" disabled />
                                             <label htmlFor='Lunes' id='LbLunes' className="labeldsabilitado select-none cursor-pointer rounded-lg border-2 border-blue-500
-            py-3 px-6 font-bold text-blue-500 transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 peer-checked:text-white peer-checked:border-blue-200"> Lunes</label>
+            py-3 px-6 font-bold text-blue-500 transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 peer-checked:text-white peer-checked:border-blue-500"> Lunes</label>
                                         </div>
                                         <div className='px-2 py-4'>
                                             <input onChange={(e) => { cargarHoras(1) }} type="radio" id='Martes' name="dia-semana" className="peer hidden" disabled />
                                             <label htmlFor='Martes' id='LbMartes' className="labeldsabilitado select-none cursor-pointer rounded-lg border-2 border-blue-500
-            py-3 px-6 font-bold text-blue-500 transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 peer-checked:text-white peer-checked:border-blue-200"> Martes</label>
+            py-3 px-6 font-bold text-blue-500 transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 peer-checked:text-white peer-checked:border-blue-500"> Martes</label>
                                         </div>
                                         <div className='px-2 py-4'>
                                             <input onChange={(e) => { cargarHoras(2) }} type="radio" id='Miercoles' name="dia-semana" className="peer hidden" disabled />
                                             <label htmlFor='Miercoles' id='LbMiercoles' className="labeldsabilitado select-none cursor-pointer rounded-lg border-2 border-blue-500
-            py-3 px-6 font-bold text-blue-500 transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 peer-checked:text-white peer-checked:border-blue-200"> Miercoles</label>
+            py-3 px-6 font-bold text-blue-500 transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 peer-checked:text-white peer-checked:border-blue-500"> Miercoles</label>
                                         </div>
                                         <div className='px-2 py-4'>
                                             <input onChange={(e) => { cargarHoras(3) }} type="radio" id='Jueves' name="dia-semana" className="peer hidden" disabled />
                                             <label htmlFor='Jueves' id='LbJueves' className="labeldsabilitado select-none cursor-pointer rounded-lg border-2 border-blue-500
-            py-3 px-6 font-bold text-blue-500 transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 peer-checked:text-white peer-checked:border-blue-200"> Jueves</label>
+            py-3 px-6 font-bold text-blue-500 transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 peer-checked:text-white peer-checked:border-blue-500"> Jueves</label>
                                         </div>
                                         <div className='px-2 py-4'>
                                             <input onChange={(e) => { cargarHoras(4) }} type="radio" id='Viernes' name="dia-semana" className="peer hidden" disabled />
                                             <label htmlFor='Viernes' id='LbViernes' className="labeldsabilitado select-none cursor-pointer rounded-lg border-2 border-blue-500
-            py-3 px-6 font-bold text-blue-500 transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 peer-checked:text-white peer-checked:border-blue-200"> Viernes</label>
+            py-3 px-6 font-bold text-blue-500 transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 peer-checked:text-white peer-checked:border-blue-500"> Viernes</label>
                                         </div>
                                         <div className='px-2 py-4'>
                                             <input onChange={(e) => { cargarHoras(5) }} type="radio" id='Sabado' name="dia-semana" className="peer hidden" disabled />
                                             <label htmlFor='Sabado' id='LbSabado' className="labeldsabilitado select-none cursor-pointer rounded-lg border-2 border-blue-500
-            py-3 px-6 font-bold text-blue-500 transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 peer-checked:text-white peer-checked:border-blue-200"> Sabado</label>
+            py-3 px-6 font-bold text-blue-500 transition-colors duration-200 ease-in-out peer-checked:bg-blue-500 peer-checked:text-white peer-checked:border-blue-500"> Sabado</label>
                                         </div>
                                     </div>
                                 </div>
@@ -564,14 +570,14 @@ export default function page() {
                                                     item[3] === "Presencial" ? (
                                                         <>
                                                             <input onChange={() => { setTipoCita(item[3]); setHoraMinutos(item[0]); setHoraSeleccionada(item[1]); mostrarBotton(true); }} type="radio" id={item[1]} name="Hora" className="peer hidden" />
-                                                            <label htmlFor={item[1]} id={`lb${item[1]}`} className="labelCheck select-none cursor-pointer rounded-lg border-2 border-indigo-500 py-3 px-6 font-bold text-indigo-500 transition-colors duration-200 ease-in-out peer-checked:bg-indigo-500 peer-checked:text-white peer-checked:border-indigo-200">
+                                                            <label htmlFor={item[1]} id={`lb${item[1]}`} className="labelCheck select-none cursor-pointer rounded-lg border-2 border-indigo-500 py-3 px-6 font-bold text-indigo-500 transition-colors duration-200 ease-in-out peer-checked:bg-indigo-500 peer-checked:text-white peer-checked:border-indigo-500">
                                                                 {item[0]}
                                                             </label>
                                                         </>
                                                     ) : (
                                                         <>
                                                             <input onChange={() => { setTipoCita(item[3]); setHoraMinutos(item[0]); setHoraSeleccionada(item[1]); mostrarBotton(true); }} type="radio" id={item[1]} name="Hora" className="peer hidden" />
-                                                            <label htmlFor={item[1]} id={`lb${item[1]}`} className="labelCheck select-none cursor-pointer rounded-lg border-2 border-green-500 py-3 px-6 font-bold text-green-500 transition-colors duration-200 ease-in-out peer-checked:bg-green-500 peer-checked:text-white peer-checked:border-green-200">
+                                                            <label htmlFor={item[1]} id={`lb${item[1]}`} className="labelCheck select-none cursor-pointer rounded-lg border-2 border-green-500 py-3 px-6 font-bold text-green-500 transition-colors duration-200 ease-in-out peer-checked:bg-green-500 peer-checked:text-white peer-checked:border-green-500">
                                                                 {item[0]}
                                                             </label>
                                                         </>
@@ -579,7 +585,7 @@ export default function page() {
                                                 ) : (
                                                     <>
                                                         <input disabled type="radio" id={item[1]} name="Hora" className="peer hidden" />
-                                                        <label htmlFor={item[1]} id={`lb${item[1]}`} className="cursor-not-allowed labelCheck select-none   rounded-lg border-2 border-red-500 py-3 px-6 font-bold text-red-500 transition-colors duration-200 ease-in-out peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-red-200" disabled>
+                                                        <label htmlFor={item[1]} id={`lb${item[1]}`} className="cursor-not-allowed labelCheck select-none   rounded-lg border-2 border-red-500 py-3 px-6 font-bold text-red-500 transition-colors duration-200 ease-in-out peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-red-500" disabled>
                                                             {item[0]}
                                                         </label>
                                                     </>

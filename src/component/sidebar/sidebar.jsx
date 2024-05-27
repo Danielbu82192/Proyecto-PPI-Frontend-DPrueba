@@ -534,7 +534,7 @@ function sidebar({ children }) {
                               </a>
                             </li>
                           </>
-                        ) : rol == 3  || rol == 5 ? (<>
+                        ) : rol == 3 || rol == 5 ? (<>
                           <li className="px-4">
                             <div className="flex flex-row items-center h-8">
                               <div className="text-sm font-light tracking-wide text-gray-500">Gestión Académica</div>
@@ -572,7 +572,7 @@ function sidebar({ children }) {
                               </span>
                               <span className={`ml-2 ${btnTextSize} tracking-wide truncate`}>Calificar Asesoría</span>
                             </a>
-                          </li></>) : rol == 2 || rol == 5? (<>
+                          </li></>) : rol == 2 || rol == 5 ? (<>
                             <li className="px-4">
                               <div className="flex flex-row items-center h-8">
                                 <div className="text-sm font-light tracking-wide text-gray-500">Gestión Académica</div>
@@ -641,19 +641,6 @@ function sidebar({ children }) {
                                   <span className={`ml-2 ${btnTextSize} tracking-wide truncate`}>Ver Notas</span>
                                 </a>
                               </li>
-                              <li>
-                                <a href="/component/coordinador/generarReportes" className="cursor-pointer relative flex flex-row items-center h-[10vh] focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-primari pr-6">
-                                  <span className={`inline-flex justify-center items-center ml-4 ${btnIconSize}`}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" class="w-8 h-8 text-gray-600" fill="none">
-                                      <path d="M7 17L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                                      <path d="M12 17L12 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                                      <path d="M17 17L17 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-                                      <path d="M2.5 12C2.5 7.52166 2.5 5.28249 3.89124 3.89124C5.28249 2.5 7.52166 2.5 12 2.5C16.4783 2.5 18.7175 2.5 20.1088 3.89124C21.5 5.28249 21.5 7.52166 21.5 12C21.5 16.4783 21.5 18.7175 20.1088 20.1088C18.7175 21.5 16.4783 21.5 12 21.5C7.52166 21.5 5.28249 21.5 3.89124 20.1088C2.5 18.7175 2.5 16.4783 2.5 12Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
-                                    </svg>
-                                  </span>
-                                  <span className={`ml-2 ${btnTextSize} tracking-wide truncate`}>Generar Reportes</span>
-                                </a>
-                              </li>
                             </>
                           ) : (null)}
 
@@ -687,7 +674,7 @@ function sidebar({ children }) {
                               </a>
                             </li>
                           </>
-                        ) : rol == 3  || rol == 5 ? (<>
+                        ) : rol == 3 || rol == 5 ? (<>
                           <li className="px-4">
                             <div className="flex flex-row items-center h-8">
                               <div className="text-sm font-light tracking-wide text-gray-500">Gestión Documental</div>
@@ -725,7 +712,7 @@ function sidebar({ children }) {
                               </span>
                               <span className={`ml-2 ${btnTextSize} tracking-wide truncate`}>Calificar Asesoría</span>
                             </a>
-                          </li></>) : rol == 2 || rol ==5? (<>
+                          </li></>) : rol == 2 || rol == 5 ? (<>
                             <li className="px-4">
                               <div className="flex flex-row items-center h-8">
                                 <div className="text-sm font-light tracking-wide text-gray-500">Gestión Documental</div>

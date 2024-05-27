@@ -19,7 +19,7 @@ function page({ params }) {
     const [asistencia, setAsistencia] = useState([])
     const [seguimiento, setSeguimiento] = useState([])
     const [modSol, setModSol] = useState([])
-    const [fechaPruebas, setFechaPruebas] = useState(new Date('05-23-2024'));
+    const [fechaPruebas, setFechaPruebas] = useState(new Date());
 
     const fetchUsuario = async (usuarioId, asistencia) => {
         const response = await fetch(`https://td-g-production.up.railway.app/usuario/${usuarioId}`);
@@ -297,6 +297,8 @@ function page({ params }) {
                                         const asesor = citas.usuariocitaequipo
                                         const asistenciaEstudiantes = estudiantes[item.id]
                                         let numSemana = item.semana
+                                        console.log(rol.id == 3 && asesor.id == usuario.id && estados[0].estadoSeguimiento.id == 1 && new Date(estados[0].fecha).getDate() == new Date(fechaPruebas).getDate())
+                                        console.log(estados[0].fecha) 
                                         estados.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
                                         return (
                                             <tr key={item.id}>

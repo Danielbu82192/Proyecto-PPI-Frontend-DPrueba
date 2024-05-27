@@ -320,7 +320,7 @@ function crear({ citaPendientes }) {
                 body: JSON.stringify(datos)
             };
             const response = await fetch('https://td-g-production.up.railway.app/citas-asesoria-ppi/' + item.id, requestOptions);
-            if (true) {
+            if (response.ok) {
                 let numSemana = 0
                 for (let i = 0; i < semanas.length; i++) {
                     const semana = semanas[i];

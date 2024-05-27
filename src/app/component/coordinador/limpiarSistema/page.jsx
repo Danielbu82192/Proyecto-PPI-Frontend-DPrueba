@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client"
-import React, { useState,useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from "next/navigation";
 
 function page() {
@@ -10,17 +10,42 @@ function page() {
     const router = useRouter();
 
     const Limpiar = async () => {
-        const requestOptions = {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-        };
-        const response = await fetch('https://td-g-production.up.railway.app/usuario/limpiarSistema/', requestOptions);
-        if(response.ok){
-            setShowCorrecto(true)
+        showAlertDelete(false) 
+        const response = await fetch('https://td-g-production.up.railway.app/equipo-ppi/exportar/-1' );
+        const filePath = await response.text()
+        const baseUrl = 'https://td-g-production.up.railway.app';
+        const fileUrl = new URL(filePath.replace('/public', ''), baseUrl).href;
+        const newWindow = window.open(fileUrl, '_blank'); 
+        if (newWindow) {
             setTimeout(() => {
-                router.push('/');
+                newWindow.close();
             }, 2000);
-        } 
+            const response = await fetch('https://td-g-production.up.railway.app/hora-semanal/exportar/');
+            const filePath = await response.text()
+            const baseUrl = 'https://td-g-production.up.railway.app';
+            const fileUrl = new URL(filePath.replace('/public', ''), baseUrl).href;
+            const newWindow = window.open(fileUrl, '_blank');
+            if (newWindow) {
+                setTimeout(() => {
+                    newWindow.close();
+                }, 2000);
+                
+                setShowCorrecto(true) 
+                const requestOptions = {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                };
+                const response = await fetch('https://td-g-production.up.railway.app/usuario/limpiarSistema/', requestOptions);
+                if (response.ok) {
+                    setShowCorrecto(true)
+                    setTimeout(() => {
+                        router.push('/');
+                    }, 2000);
+                }
+            }
+
+
+        }
     }
 
     useEffect(() => {
@@ -63,7 +88,7 @@ function page() {
                     <div class="flex flex-col justify-center content-center items-center rounded-lg bg-white p-4 shadow-2xl min-w-[50vw] max-w-[50vw] border border-solid border-gray-300">
                         <h2 class="text-lg font-bold">¿Deseas limpiar el sistema?</h2>
                         <p class="mt-2 text-sm text-gray-800">
-                            Está seguro de que desea limpiar el sistema.
+                            Está seguro de que desea limpiar el sistema, al limpiar el sistema se exportaran la información.
                         </p>
 
                         <div class="mt-4 flex flex-row flex-wrap min-w-full items-center content-center justify-center gap-2">

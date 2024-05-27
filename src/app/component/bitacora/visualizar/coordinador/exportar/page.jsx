@@ -12,8 +12,7 @@ function page() {
     const [equipo, setEquipo] = useState([])
     const [selectExport, setSelectExport] = useState(-1)
     const router = useRouter();
-    const exportarBitacora = async () => {
-        alert('https://td-g-production.up.railway.app/equipo-ppi/exportar/' + selectExport)
+    const exportarBitacora = async () => { 
         const response = await fetch('https://td-g-production.up.railway.app/equipo-ppi/exportar/' + selectExport);
         const filePath = await response.text()
         const baseUrl = 'https://td-g-production.up.railway.app';

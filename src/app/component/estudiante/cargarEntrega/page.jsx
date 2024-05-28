@@ -143,13 +143,11 @@ function Page() {
     };
 
     const handleFileChange = (event, entregaId, nombreEntrega) => {
-        if (!isEntregado(nombreEntrega)) {
-            setSelectedFiles(prevState => ({
-                ...prevState,
-                [entregaId]: event.target.files[0]
-            }));
-        }
-    };
+        setSelectedFiles(prevState => ({
+            ...prevState,
+            [entregaId]: event.target.files[0]
+        }));
+    };    
 
     const handleFileUpload = async (entregaId, nombreEntrega, configuracionEntregaId, bitacoraPpiId) => {
         try {

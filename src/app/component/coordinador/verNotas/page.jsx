@@ -7,10 +7,11 @@ import { FiArrowLeft } from "react-icons/fi";
 const ReactHTMLTableToExcel = dynamic(() => import('react-html-table-to-excel'), { ssr: false });
 
 function Page() {
-    const [equiposConNotas, setEquiposConNotas] = useState({}); // Estado para almacenar los equipos y sus notas
-    const [selectedEquipo, setSelectedEquipo] = useState(null); // Estado para el equipo seleccionado
-    const [usuarios, setUsuarios] = useState({}); // Estado para almacenar los usuarios
-    const [entregas, setEntregas] = useState([]); // Estado para almacenar los tipos de entrega
+    const [equiposConNotas, setEquiposConNotas] = useState({});
+    const [selectedEquipo, setSelectedEquipo] = useState(null);
+    const [usuarios, setUsuarios] = useState({});
+    const [entregas, setEntregas] = useState([]);
+    const [ubicacionesEntrega, setUbicacionesEntrega] = useState({});
 
     const currentYear = new Date().getFullYear();
     const currentMonth = new Date().getMonth() + 1;
@@ -18,7 +19,6 @@ function Page() {
     const fileName = `Notas PPI ${currentYear} - ${semester}`;
 
     useEffect(() => {
-        // Función para obtener los usuarios
         const fetchUsuarios = async () => {
             try {
                 const response = await axios.get('https://td-g-production.up.railway.app/usuario');
@@ -32,7 +32,6 @@ function Page() {
             }
         };
 
-        // Función para obtener los equipos y sus notas
         const fetchEquipos = async () => {
             try {
                 const response = await axios.get('https://td-g-production.up.railway.app/equipo-usuarios/GetAllGroups');
@@ -49,7 +48,6 @@ function Page() {
             }
         };
 
-        // Función para obtener los tipos de entrega
         const fetchEntregas = async () => {
             try {
                 const response = await axios.get('https://td-g-production.up.railway.app/tipo-entrega/GetAllEntregas');
@@ -59,24 +57,47 @@ function Page() {
             }
         };
 
-        fetchUsuarios(); // Llamar la función para obtener usuarios
-        fetchEquipos(); // Llamar la función para obtener equipos
-        fetchEntregas(); // Llamar la función para obtener tipos de entrega
+        const fetchUbicacionesEntrega = async () => {
+            try {
+                const response = await fetch("https://td-g-production.up.railway.app/entrega-equipo-ppi/GetPPIEntregaByID");
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                const entregasData = await response.json();
+
+                console.log("Data: ", entregasData)
+
+                const ubicaciones = {};
+                entregasData.forEach(entrega => {
+                    if (!ubicaciones[entrega.Codigo_Equipo]) {
+                        ubicaciones[entrega.Codigo_Equipo] = {};
+                    }
+                    ubicaciones[entrega.Codigo_Equipo][entrega.Tipo_Entrega_ID] = entrega.Ubicacion_Entrega;
+                });
+
+                setUbicacionesEntrega(ubicaciones);
+            } catch (error) {
+                console.error("Fetch error: ", error);
+            }
+        };
+
+        fetchUsuarios();
+        fetchEquipos();
+        fetchEntregas();
+        fetchUbicacionesEntrega();
     }, []);
 
-    // Función para manejar el click en un equipo
+
     const handleEquipoClick = (codigoEquipo) => {
         const equipoSeleccionado = equiposConNotas[codigoEquipo];
         setSelectedEquipo(equipoSeleccionado);
     };
 
-    // Función para hacer capitalize a una cadena
     const capitalize = (str) => {
         const str2 = str.toLowerCase();
         return str2.replace(/\b\w/g, (char) => char.toUpperCase());
     };
 
-    // Función para obtener las calificaciones de un usuario específico
     const fetchCalificaciones = async (idUsuario) => {
         try {
             const response = await axios.get(`https://backend.dbcpolijic2024.online/usuario-calificacion/${idUsuario}`);
@@ -87,7 +108,6 @@ function Page() {
         }
     };
 
-    // Obtener las calificaciones de cada usuario después de obtener los usuarios
     useEffect(() => {
         const asignarCalificaciones = async () => {
             const calificacionesUsuarios = {};
@@ -111,7 +131,7 @@ function Page() {
                         const notaAsesorias = parseFloat(integrante.Nota_Asesoria_Definitiva_Individual) || 0;
                         const porcentajeAsesorias = entregas.find(entrega => entrega.id === 8)?.Porcentaje_Entrega || 0;
                         definitiva += (notaAsesorias) * (porcentajeAsesorias / 100);
-                        integrante.Definitiva = definitiva.toFixed(2); // Asignar la calificación definitiva
+                        integrante.Definitiva = definitiva.toFixed(2);
                         return integrante;
                     });
                     return acc;
@@ -166,7 +186,7 @@ function Page() {
                                                     <tr key={idx}>
                                                         {idx === 0 && (
                                                             <td
-                                                                className="border border-gray-300 text-sm px-4 py-2 font-bold cursor-pointer"
+                                                                className="border border-gray-300 text-sm px-4 py-2 font-bold cursor-pointer text-decoration-line: underline"
                                                                 rowSpan={integrantes.length}
                                                                 onClick={() => handleEquipoClick(codigoEquipo)}
                                                             >
@@ -174,18 +194,27 @@ function Page() {
                                                             </td>
                                                         )}
                                                         <td className="border border-gray-300 text-sm px-4 py-2">{usuario?.documento}</td>
-                                                        {entregas.map((entrega) => (
-                                                            <td key={entrega.id} className="border border-gray-300 text-sm px-4 py-2">
-                                                                {entrega.id === 8 ? integrante.Nota_Asesoria_Definitiva_Individual : integrante[entrega.id]}
-                                                            </td>
-                                                        ))}
-                                                        <td className="border border-gray-300 text-sm px-4 py-2">{integrante.Definitiva}</td>
+
+                                                        {entregas.map((entrega) => {
+                                                            const ubicacion = ubicacionesEntrega[codigoEquipo]?.[entrega.id];
+                                                            return (
+                                                                <td key={entrega.id} className="border border-gray-300 text-sm px-4 py-2 text-decoration-line: underline">
+                                                                    {entrega.id === 8 ? integrante.Nota_Asesoria_Definitiva_Individual : (
+                                                                        <a href={ubicacion} target="_blank" rel="noopener noreferrer">
+                                                                            {integrante[entrega.id]}
+                                                                        </a>
+                                                                    )}
+                                                                </td>
+                                                            );
+                                                        })}
+                                                        <td className={`border border-gray-300 font-bold text-sm px-4 py-2 ${integrante.Definitiva < 3 ? 'bg-red-100' : 'bg-green-100'}`}>
+                                                            {integrante.Definitiva}
+                                                        </td>
                                                     </tr>
                                                 );
                                             })}
                                         </React.Fragment>
                                     ))}
-
                                 </tbody>
                             </table>
                         </div>
@@ -199,10 +228,10 @@ function Page() {
                             <table className="min-w-full bg-white">
                                 <thead>
                                     <tr>
-                                        <th className="border px-4 py-2">Cédula</th>
-                                        <th className="border px-4 py-2">Nombre</th>
-                                        <th className="border px-4 py-2">Correo</th>
-                                        <th className="border px-4 py-2">Grupo</th>
+                                        <th className="border px-4 py-2 bg-green-500">Cédula</th>
+                                        <th className="border px-4 py-2  bg-green-500">Nombre</th>
+                                        <th className="border px-4 py-2  bg-green-500">Correo</th>
+                                        <th className="border px-4 py-2  bg-green-500">Grupo</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -230,5 +259,6 @@ function Page() {
         </div>
     );
 }
+
 
 export default Page;

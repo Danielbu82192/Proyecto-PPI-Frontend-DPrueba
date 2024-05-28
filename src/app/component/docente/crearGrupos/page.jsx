@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { FiArrowLeft, FiPlus } from "react-icons/fi";
 import CryptoJS from 'crypto-js';
+import { id } from "date-fns/locale";
 
 function Page() {
   const [asignaturas, setAsignaturas] = useState([]);
@@ -86,6 +87,13 @@ function GrupoDetail({ grupo, setSelectedGrupo }) {
   const [showAddStudentPopup, setShowAddStudentPopup] = useState(false);
   const [otherStudents, setOtherStudents] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const [showPopup2, setShowPopup2] = useState(false);
+  const [formData, setFormData] = useState({
+    nombre: '',
+    documento: '',
+    correo: ''
+  });
+  const [error2, setError2] = useState('');
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -430,8 +438,155 @@ function GrupoDetail({ grupo, setSelectedGrupo }) {
     setSelectedStudent(null);
   };
 
-  return (
 
+  // Popup para agregar estudiante manualmente
+  const handleAddStudentManual = () => {
+    setShowPopup2(true);
+  };
+
+  const handleClosePopup = () => {
+    setShowPopup2(false);
+  };
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  //Submit de creación manual.
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Verificar que ningún campo esté vacío
+    if (!formData.nombre || !formData.documento || !formData.correo) {
+      setError('Todos los campos son obligatorios');
+      return;
+    }
+
+    // Verificar que el documento sea numérico
+    if (isNaN(formData.documento)) {
+      setError('El documento debe ser un número');
+      return;
+    }
+
+    try {
+      const response = await fetch('https://td-g-production.up.railway.app/usuario/StudentSemester');
+      const data = await response.json();
+
+      // Check if formData.documento exists in data
+      const userExists = data.some(user => user.Usuario_Documento === formData.documento);
+
+      if (userExists) {
+        alert('La cédula: ' + formData.documento + ' ya se encuentra matriculada.');
+        return;
+      } else {
+        // Aquí puedes manejar el envío del formulario si la validación pasa
+        console.log("Datos del formulario manual: ", formData);
+
+        //Enviar datos al servidor.
+        const dataEstudianteNuevo = [{
+          Usuario_Nombre: ' * ' + formData.nombre,
+          Usuario_Documento: formData.documento,
+          Usuario_Correo: formData.correo,
+          Rol_ID: 1
+        }];
+
+        try {
+          const response = await fetch('https://backend.dbcpolijic2024.online/usuario/crearAsesores', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(dataEstudianteNuevo)
+          });
+
+          if (!response.ok) {
+            throw new Error('Error al guardar cambios');
+          } else {
+            alert('Usuario creado correctamente');
+          }
+
+        } catch (error) {
+          console.error('Error:', error.message);
+        }
+
+        // Realizar solicitud GET al endpoint
+        fetch('https://td-g-production.up.railway.app/usuario')
+          .then(response => response.json())
+          .then(async data => {
+
+            // Buscar el Usuario_ID correspondiente al formData.documento
+            console.log("formData: ", formData)
+            console.log("Data: ", data)
+
+            const usuarioEncontrado = data.find(usuario => usuario.documento === formData.documento);
+
+            console.log("Usuario encontrado:", usuarioEncontrado);
+
+            if (usuarioEncontrado) {
+              const usuarioID = usuarioEncontrado.id;
+              console.log("Grupo actual: ", grupo)
+
+              const dataUsuarioAsignatura = [{
+                id: usuarioID,
+                Asignatura_Semestre: grupo.Asignatura_ID,
+                Grupo_Codigo: grupo.Grupo_Codigo,
+              }];
+
+              //Crear Usuario_Asignatura.
+
+              try {
+                const response = await fetch('https://td-g-production.up.railway.app/usuario-asignatura/createUsuarioAsignatura', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify(dataUsuarioAsignatura)
+                });
+
+                if (!response.ok) {
+                  throw new Error('Error al asignar asignatura.');
+                } else {
+                  console.log('Asignatura asignada correctamente.');
+                }
+
+              } catch (error) {
+                console.error('Error:', error.message);
+              }
+
+              console.log("Usuario ID encontrado:", usuarioID);
+            } else {
+              console.log("No se encontró ningún usuario con el documento proporcionado.");
+            }
+
+          })
+          .catch(error => {
+            console.error('Error al obtener datos del servidor:', error);
+            // Manejar el error si la solicitud falla
+          });
+
+        handleClosePopup();
+        setShowAddStudentPopup(false);
+
+        //resetear formulario
+        setFormData({
+          nombre: '',
+          documento: '',
+          correo: '',
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setError('Hubo un error al verificar el documento.');
+    }
+
+    setError2('');
+    //refrescar pagina
+  };
+
+  return (
 
     <div className="ml-6 mr-6 mt-6 border   bg-white border-b flex justify-between">
       <div className='pt-8  pb-8 w-full'>
@@ -448,18 +603,18 @@ function GrupoDetail({ grupo, setSelectedGrupo }) {
             </h1>
           </div>
         </div>
-        <div className='p-10'>
+        <div className='p-5'>
           <div className="flex items-center mb-4">
-            Numere los integrantes de un mismo equipo, por ejemplo:<br />
+            Númere los integrantes que conforman un equipo con el mismo número, por ejemplo:<br />
             Estudiantes A, B, C como Equipo 1.<br />Estudiantes D, E, F como Equipo 2.
           </div>
           {error && <div className="text-red-500 mb-4">{error}</div>}
           <table className="min-w-full bg-white border border-collapse">
             <thead>
               <tr>
-                <th className="py-1 px-2 border">Cédula</th>
-                <th className="py-1 px-2 border">Estudiante</th>
-                <th className="py-1 px-2 border" style={{ width: "20%" }}>
+                <th className="py-1 px-2 border bg-green-500">Cédula</th>
+                <th className="py-1 px-2 border bg-green-500">Estudiante</th>
+                <th className="py-1 px-2 border bg-green-500" style={{ width: "20%" }}>
                   Numeración de Equipos
                   <svg
                     onClick={handleSort}
@@ -523,7 +678,7 @@ function GrupoDetail({ grupo, setSelectedGrupo }) {
           </div>
           {showAddStudentPopup && (
             <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-500 bg-opacity-50">
-              <div className="bg-white p-6 rounded shadow-md max-h-80 overflow-y-auto">
+              <div className="bg-white p-6 rounded shadow-md max-h-[90%] overflow-y-auto">
                 <h2 className="text-lg font-bold mb-4">Seleccionar Estudiante</h2>
                 <table className="min-w-full bg-white border border-collapse mb-4">
                   <thead>
@@ -565,6 +720,78 @@ function GrupoDetail({ grupo, setSelectedGrupo }) {
                     ))}
                   </tbody>
                 </table>
+                <div className="flex justify-start mt-4">
+                  <button
+                    onClick={handleAddStudentManual}
+                    className="bg-blue-500 text-xs text-white mb-4 py-2 px-2 rounded flex items-center"
+                  >
+                    <FiPlus className="mr-2" />
+                    Agregar manualmente
+                  </button>
+                  {showPopup2 && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                      <div className="bg-white p-6 rounded shadow-lg">
+                        <div className="flex justify-end">
+                        <button
+                              onClick={handleClosePopup}
+                              className="bg-red-500 hover:bg-red-700 text-white py-1 px-2 rounded focus:outline-none focus:shadow-outline"
+                            >
+                              X
+                            </button>
+                        </div>
+                        <h2 className="text-lg mb-4 font-bold ">Agregar Estudiante: </h2>
+                        <form onSubmit={handleSubmit}>
+                          <div className="mb-4">
+                            <label className="block text-sm font-bold mb-2" htmlFor="nombre">
+                              Nombre
+                            </label>
+                            <input
+                              type="text"
+                              id="nombre"
+                              name="nombre"
+                              value={formData.nombre}
+                              onChange={handleChange}
+                              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            />
+                          </div>
+                          <div className="mb-4">
+                            <label className="block text-sm font-bold mb-2" htmlFor="documento">
+                              Documento
+                            </label>
+                            <input
+                              type="number"
+                              id="documento"
+                              name="documento"
+                              value={formData.documento}
+                              onChange={handleChange}
+                              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            />
+                          </div>
+                          <div className="mb-4">
+                            <label className="block text-sm font-bold mb-2" htmlFor="correo">
+                              Correo
+                            </label>
+                            <input
+                              type="email"
+                              id="correo"
+                              name="correo"
+                              value={formData.correo}
+                              onChange={handleChange}
+                              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            />
+                            {error && <p className="text-red-500">{error}</p>}
+                          </div>
+                          <div className="flex justify-center space-x-4">
+                            <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 rounded focus:outline-none focus:shadow-outline">
+                              Enviar
+                            </button>
+                            
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  )}
+                </div>
                 <div className="flex justify-center">
                   <button
                     onClick={handleConfirmAddStudent}
@@ -585,31 +812,32 @@ function GrupoDetail({ grupo, setSelectedGrupo }) {
           <div className="flex justify-center mt-4">
             <button
               onClick={handleSaveTable}
-              className="bg-green-500 text-white py-2 px-4 rounded mr-2"
+              className="bg-green-500 hover:bg-green-800 text-white py-2 px-4 rounded mr-2"
             >
               Guardar Tabla
             </button>
             <button
               onClick={handleReportTeams}
-              className="bg-red-800 text-white py-2 px-4 rounded"
+              className="bg-red-500 hover:bg-red-800 text-white py-2 px-4 rounded"
             >
               Reportar Equipos
             </button>
           </div>
           {showPopup && (
             <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-500 bg-opacity-50">
-              <div className="bg-white p-6 rounded shadow-md">
-                <p className="mb-4">Una vez reportados los equipos, no tendrás forma realizar modificaciones. ¿Estás seguro de querer reportar los equipos?</p>
+              <div className="bg-white p-6 rounded shadow-md justify-items-center">
+                <p className="mb-4 text-center">Una vez reportados los equipos, no tendrás forma de realizar modificaciones. <br /></p>
+                <p className="mb-4 text-center "> ¿Estás seguro de querer reportar los equipos? </p>
                 <div className="flex justify-center">
                   <button
                     onClick={() => handleConfirm(true)}
-                    className="bg-green-500 text-white py-2 px-4 rounded mr-2"
+                    className="bg-green-500 hover:bg-green-800 text-white py-2 px-4 rounded mr-2"
                   >
                     Sí
                   </button>
                   <button
                     onClick={() => handleConfirm(false)}
-                    className="bg-red-500 text-white py-2 px-4 rounded"
+                    className="bg-red-500 hover:bg-red-800 text-white py-2 px-4 rounded"
                   >
                     No
                   </button>

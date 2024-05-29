@@ -4,27 +4,29 @@ import './page.css';
 //import Dialog from '@mui/material/Dialog';
 
 const Page = () => {
-  const [asesores, setAsesores] = useState(Array(15).fill({ Usuario_ID: "", Usuario_Nombre: "", Rol_ID: "", Usuario_Documento: "", Usuario_Correo: "" }));
+  const [asesores, setAsesores] = useState(Array(15).fill({ Usuario_ID: "", Usuario_Nombre: "", Rol_ID: "", Usuario_Documento: "", Usuario_Correo: "",Horas_Asesor:"",Oficina:"" }));
   const [traidosDeBD, setTraidosDeBD] = useState([]); // Almacenar los datos originales
+  const [horas, setHoras] = useState([]); // Almacenar los datos originales
   const apiEndpoint = "https://td-g-production.up.railway.app/usuario/GetAsesor";
   const getAllUsers = "https://td-g-production.up.railway.app/usuario";
 
   useEffect(() => {
     fetch(apiEndpoint)
       .then(response => response.json())
-      .then(data => {
+      .then(data => { 
         const fetchedData = data.slice(0, 15);
         const filledData = fetchedData.concat(Array(15 - fetchedData.length).fill({ Usuario_ID: "", Usuario_Nombre: "", Rol_ID: "", Usuario_Documento: "", Usuario_Correo: "" }));
         setAsesores(filledData);
         // Almacenar los datos originales
         setTraidosDeBD(fetchedData);
       })
-      .catch(error => console.error('Error fetching data:', error));
+      .catch(error => console.error('Error fetching data:', error)); 
+       
   }, []);
 
-  const handleDelete = (index, asesores) => {
+  const handleDelete = (index, asesores) => { 
     const updatedAsesores = [...asesores];
-    updatedAsesores[index] = { Usuario_ID: "", Usuario_Nombre: "", Rol_ID: "", Usuario_Documento: "", Usuario_Correo: "" };
+    updatedAsesores[index] = { Usuario_ID: "", Usuario_Nombre: "", Rol_ID: "", Usuario_Documento: "", Usuario_Correo: "", Horas_Asesor: "", Oficina: ""  };
     setAsesores(updatedAsesores);
   };
 
@@ -34,9 +36,9 @@ const Page = () => {
 
     /* Si asesor.Usuario_Documento === null || asesor.Usuario_Nombre === null || asesor.Usuario_Correo === null, volver Usuario_ID: "", Usuario_Nombre: "", Rol_ID: "", Usuario_Documento: "", Usuario_Correo: "" */
     if (updatedAsesores[index].Usuario_Documento === null && updatedAsesores[index].Usuario_Nombre === null && updatedAsesores[index].Usuario_Correo === null) {
-      updatedAsesores[index] = { Usuario_ID: "", Usuario_Nombre: "", Rol_ID: "", Usuario_Documento: "", Usuario_Correo: "" };
+      updatedAsesores[index] = { Usuario_ID: "", Usuario_Nombre: "", Rol_ID: "", Usuario_Documento: "", Usuario_Correo: "" , Horas_Asesor: "", Oficina: ""  };
     }
-
+    
     setAsesores(updatedAsesores);
   };
 
@@ -45,7 +47,7 @@ const Page = () => {
     let asesoresModificados = asesores.filter((asesor) => {
       if (asesor.Usuario_ID !== "") {
         const asesorOriginal = traidosDeBD.find((asesorOriginal) => asesorOriginal.Usuario_ID === asesor.Usuario_ID);
-        return asesor.Usuario_Documento !== asesorOriginal.Usuario_Documento || asesor.Usuario_Nombre !== asesorOriginal.Usuario_Nombre || asesor.Usuario_Correo !== asesorOriginal.Usuario_Correo;
+        return asesor.Usuario_Documento !== asesorOriginal.Usuario_Documento || asesor.Usuario_Nombre !== asesorOriginal.Usuario_Nombre || asesor.Usuario_Correo !== asesorOriginal.Usuario_Correo|| asesor.Horas_Asesor !== asesorOriginal.Oficina;
       }
       return true;
     });
@@ -63,7 +65,7 @@ const Page = () => {
     // Identificar registros nuevos
     //const asesoresNuevos = asesores.filter(asesor => asesor.Usuario_ID === "" && asesor.Usuario_Documento && asesor.Usuario_Nombre && asesor.Usuario_Correo);
 
-    const asesoresNuevos = asesores.filter(asesor => asesor.Usuario_ID === "" && asesor.Usuario_Documento && asesor.Usuario_Nombre && asesor.Usuario_Correo)
+    const asesoresNuevos = asesores.filter(asesor => asesor.Usuario_ID === "" && asesor.Usuario_Documento && asesor.Usuario_Nombre && asesor.Usuario_Correo && asesor.Horas_Asesor && asesor.Oficina)
       .map(asesor => {
         const asesorExistente = traidosDeBD.find(a => a.Usuario_Documento === asesor.Usuario_Documento);
         if (asesorExistente) {
@@ -76,8 +78,8 @@ const Page = () => {
         return asesor;
       });
 
-    console.log("Traidos de db:", traidosDeBD);
-    console.log("Asesores:", asesores);
+    //console.log("Traidos de db:", traidosDeBD);
+    //console.log("Asesores:", asesores);
 
     /* Asesores Eliminados */
     const asesoresEliminados = traidosDeBD.filter((asesorOriginal) => !asesores.some((asesor) => asesor.Usuario_ID === asesorOriginal.Usuario_ID));
@@ -94,17 +96,17 @@ const Page = () => {
       asesoresNuevos,
       asesoresEliminados
     };
-
+ 
     let dataToSend2 = asesoresModificados.concat(asesoresNuevos, asesoresEliminados);
-    console.log("antes de filtrar: ", dataToSend2); 
-
+    console.log(dataToSend2)
+    //console.log("antes de filtrar: ", dataToSend2);  
     let conjunto = new Set(dataToSend2.map(JSON.stringify));
     dataToSend2 = Array.from(conjunto).map(JSON.parse);
     
-    console.log("Filtrado:", dataToSend2);
+    //  console.log("Filtrado:", dataToSend2);
 
     try {
-      const response = await fetch('https://backend.dbcpolijic2024.online/usuario/crearAsesores', {
+      const response = await fetch('https://td-g-production.up.railway.app/usuario/crearAsesores', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -132,14 +134,15 @@ const Page = () => {
             <th className="py-1 px-2 border-b border-gray-200 bg-green-500">Cédula</th>
             <th className="py-1 px-2 border-b border-gray-200 bg-green-500">Nombre</th>
             <th className="py-1 px-2 border-b border-gray-200 bg-green-500">Correo</th>
+            <th className="py-1 px-2 border-b border-gray-200 bg-green-500">Horas Asesorías</th>
+            <th className="py-1 px-2 border-b border-gray-200 bg-green-500">Oficina</th>
           </tr>
         </thead>
         <tbody>
           {asesores.map((asesor, index) => (
             <tr key={index} className="hover:bg-gray-100">
               <td className="py-1 px-0.5 border-gray-200 text-center text-sm">
-                {console.log(asesor.Usuario_ID, asesor.Usuario_Documento, asesor.Usuario_Nombre, asesor.Usuario_Correo)}
-                {(asesor.Usuario_ID !== ("" && null) && asesor.Usuario_Documento !== ("" && null) || asesor.Usuario_Nombre !== ("" && null) || asesor.Usuario_Correo !== ("" && null)) ? (
+                 {(asesor.Usuario_ID !== ("" && null) && asesor.Usuario_Documento !== ("" && null) || asesor.Usuario_Nombre !== ("" && null) || asesor.Usuario_Correo !== ("" && null)) ? (
                   <button onClick={() => handleDelete(index, asesores)} className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-700 text-sm">X</button>
                 )
                   : null
@@ -169,6 +172,22 @@ const Page = () => {
                   className="w-full py-1 px-2 border-gray-200"
                 />
               </td>
+              <td className="p-0 border-gray-200" style={{ width: "45%" }}>
+                <input
+                  type="email"
+                  value={asesor.Horas_Asesor }
+                  onChange={(e) => handleInputChange(index, 'Horas_Asesor', e.target.value)}
+                  className="w-full py-1 px-2 border-gray-200"
+                />
+              </td>
+              <td className="p-0 border-gray-200" style={{ width: "45%" }}>
+              <input
+                type="email"
+                value={asesor.Oficina }
+                onChange={(e) => handleInputChange(index, 'Oficina', e.target.value)}
+                className="w-full py-1 px-2 border-gray-200"
+              />
+            </td>
             </tr>
           ))}
         </tbody>

@@ -815,8 +815,9 @@ function sidebar({ children }) {
                     ) : (null)}
                 </ul>
               </div >
+
               <div className='h-[20vh]'>
-                <div className='border-t border-t-slate-200'>
+                <div className='border-t border-t-slate-200 hide-on-desktop'>
                   <a href="/component/perfil" className="cursor-pointer relative flex flex-row items-center h-[10vh] focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-primari pr-6 " >
                     <span className={`inline-flex justify-center items-center ml-4 ${btnIconSize}`}>
                       <img src={imagen} className={`${profileImgSize} rounded-full`} />
@@ -824,19 +825,35 @@ function sidebar({ children }) {
                     <span className={`ml-2 ${btnTextSize} tracking-wide truncate`}>Perfil</span>
                   </a>
                 </div>
-                <div onClick={() => { cerrarSesion() }}
-                  className="cursor-pointer relative flex flex-row items-center h-[10vh] focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-primari pr-6 ">
+                <div onClick={() => { cerrarSesion() }} className="cursor-pointer relative flex flex-row items-center h-[10vh] focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-primari pr-6 hide-on-desktop">
                   <span className={`inline-flex justify-center items-center ml-4 ${btnIconSize}`}>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-gray-600">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
-                    </svg>
+                    <svg viewBox="0 0 24 24" id="_24x24_On_Light_Session-Leave" data-name="24x24/On Light/Session-Leave" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <rect id="view-box" width="24" height="24" fill="none"></rect> <path id="Shape" d="M2.95,17.5A2.853,2.853,0,0,1,0,14.75v-12A2.854,2.854,0,0,1,2.95,0h8.8a.75.75,0,0,1,0,1.5H2.95A1.362,1.362,0,0,0,1.5,2.75v12A1.363,1.363,0,0,0,2.95,16h8.8a.75.75,0,0,1,0,1.5Zm9.269-4.219a.751.751,0,0,1,0-1.061L14.939,9.5H5.75a.75.75,0,0,1,0-1.5h9.19L12.219,5.28A.75.75,0,1,1,13.28,4.22l4,4a.749.749,0,0,1,0,1.06l-4,4a.751.751,0,0,1-1.061,0Z" transform="translate(3.25 3.25)" fill="#141124"></path> </g></svg>
                   </span>
-                  <span className={`ml-2 ${btnTextSize} tracking-wide truncate`}>Cerrar sesión</span>
+                  <span className={`ml-2 ${btnTextSize} tracking-wide truncate`}>Cerrar Sesión</span>
                 </div>
               </div>
             </div >
           </div >
           <div className='h-[100vh] w-[100vw] bg-gray-50' onMouseOver={click ? hiddenSidebar : null} onClick={click ? hiddenSidebar : null}>
+            <div className="flex justify-end pr-4">
+              <div className="flex space-x-1">
+                <div className='border-t border-t-slate-200 hide-on-mobile'>
+                  <a href="/component/perfil" className="cursor-pointer relative flex flex-row items-center h-[10vh] focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-primari pr-2">
+                    <span className={`inline-flex justify-center items-center ml-4 ${btnIconSize}`}>
+                      <img src={imagen} className={`${profileImgSize} rounded-full`} />
+                    </span>
+                    <span className={`ml-2 ${btnTextSize} tracking-wide truncate`}>Perfil</span>
+                  </a>
+                </div>
+                <div onClick={() => { cerrarSesion() }}
+                  className="cursor-pointer relative flex flex-row items-center h-[10vh] focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-primari pr-6 hide-on-mobile">
+                  <span className={`inline-flex justify-center items-center ml-4 ${btnIconSize}`}>
+                    <svg viewBox="0 0 24 24" id="_24x24_On_Light_Session-Leave" data-name="24x24/On Light/Session-Leave" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <rect id="view-box" width="24" height="24" fill="none"></rect> <path id="Shape" d="M2.95,17.5A2.853,2.853,0,0,1,0,14.75v-12A2.854,2.854,0,0,1,2.95,0h8.8a.75.75,0,0,1,0,1.5H2.95A1.362,1.362,0,0,0,1.5,2.75v12A1.363,1.363,0,0,0,2.95,16h8.8a.75.75,0,0,1,0,1.5Zm9.269-4.219a.751.751,0,0,1,0-1.061L14.939,9.5H5.75a.75.75,0,0,1,0-1.5h9.19L12.219,5.28A.75.75,0,1,1,13.28,4.22l4,4a.749.749,0,0,1,0,1.06l-4,4a.751.751,0,0,1-1.061,0Z" transform="translate(3.25 3.25)" fill="#141124"></path> </g></svg>
+                  </span>
+                  <span className={`ml-2 ${btnTextSize} tracking-wide truncate`}>Cerrar Sesión</span>
+                </div>
+              </div>
+            </div>
             <div id='contSlidebar' className={`md:!ml-[16rem] min-h-full flex flex-col flex-auto flex-shrink-0 antialiased justify-center bg-gray-50 text-gray-800 ${click ? 'hidden' : 'flex'}`}>
               {children}
             </div>

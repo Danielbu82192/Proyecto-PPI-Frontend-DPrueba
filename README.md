@@ -156,8 +156,8 @@ En la version actual hay que tener en cuenta la siguiente información:
 
 En el presente proyecto se realiza el desarrollo del frontend del Sistema Gestor del PPI, utilizando tecnologías modernas y eficientes para garantizar una experiencia de usuario fluida y atractiva.
 <p align="center">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/2300px-React-icon.svg.png" alt="ReactJs" width="100" height="100">
-  <img src="https://cdn.icon-icons.com/icons2/2389/PNG/512/next_js_logo_icon_145038.png" alt="NextJS" width="100" height="100"> 
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/2300px-React-icon.svg.png" alt="ReactJs" width="200" >
+  <img src="https://cdn.icon-icons.com/icons2/2389/PNG/512/next_js_logo_icon_145038.png" alt="NextJS" width="200" > 
 </p>
 
 El frontend ha sido desarrollado con **Next.js**, un poderoso framework de **React.js** que permite la creación de aplicaciones web optimizadas y de alto rendimiento. A continuación, se detallan las principales tecnologías y dependencias utilizadas en este proyecto:

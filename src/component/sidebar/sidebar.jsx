@@ -572,6 +572,20 @@ function sidebar({ children }) {
                               </span>
                               <span className={`ml-2 ${btnTextSize} tracking-wide truncate`}>Calificar Asesoría</span>
                             </a>
+                          </li><li>
+                            <a href="/component/asesor/verNotas" className="cursor-pointer relative flex flex-row items-center h-[10vh] focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-primari pr-6">
+                              <span className={`inline-flex justify-center items-center ml-4 ${btnIconSize}`}>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="#000000" fill="none">
+                                  <path d="M17 2V4M12 2V4M7 2V4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                  <path d="M3.5 10C3.5 6.70017 3.5 5.05025 4.52513 4.02513C5.55025 3 7.20017 3 10.5 3H13.5C16.7998 3 18.4497 3 19.4749 4.02513C20.5 5.05025 20.5 6.70017 20.5 10V15C20.5 18.2998 20.5 19.9497 19.4749 20.9749C18.4497 22 16.7998 22 13.5 22H10.5C7.20017 22 5.55025 22 4.52513 20.9749C3.5 19.9497 3.5 18.2998 3.5 15V10Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                  <path d="M13.5 16H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                                  <path d="M13.5 9H17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                                  <path d="M7 10C7 10 7.5 10 8 11C8 11 9.58824 8.5 11 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                  <path d="M7 17C7 17 7.5 17 8 18C8 18 9.58824 15.5 11 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                              </span>
+                              <span className={`ml-2 ${btnTextSize} tracking-wide truncate`}>Ver Notas</span>
+                            </a>
                           </li></>) : rol == 2 || rol == 5 ? (<>
                             <li className="px-4">
                               <div className="flex flex-row items-center h-8">

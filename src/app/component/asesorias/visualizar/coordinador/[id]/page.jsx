@@ -8,7 +8,7 @@ import { data } from 'autoprefixer';
 
 function page({ params }) {
 
-    const [fechaPruebas, setFechaPruebas] = useState(new Date("05/05/2024"));
+    const [fechaPruebas, setFechaPruebas] = useState(new Date());
 
     const [cita, setCita] = useState([]);
     const [semanaConst, setSemanaConst] = useState(['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'])
@@ -18,6 +18,7 @@ function page({ params }) {
     const [grupoTrue, setGrupoTrue] = useState(false);
     const [selectEstado, setSelectEstado] = useState(1);
     const [citaEstado, setCitaEstado] = useState([]);
+    const [motivo, setMotivo] = useState([]);
     const [tipoCita, setTipoCita] = useState([]);
     const [showModificar, setShowModificar] = useState(true)
     const [dia, setDia] = useState()
@@ -68,6 +69,7 @@ function page({ params }) {
                 const data = await response.json();
                 setCita(data);
                 setCitaEstado(data.estadoCita)
+                setMotivo(data.observacionCita)
                 setNumeroDiaLunes(calcularNumeroDiaLunes(new Date(data.fecha)) + fechaPruebas.getDay())
                 setDia(new Date(data.fecha).getDay());
                 setSemanaCancelar([semanaConst.slice(fechaPruebas.getDay() - 6), semanaConst]);
@@ -561,6 +563,18 @@ function page({ params }) {
                                     </ul>
                                 </div>
                             </div>
+                            {citaEstado.id == 4 ? (
+                                <div className="text-center mt-5 flex flex-col items-center">
+                                    <div>
+                                        <h1 className="text-2xl sm:text-3xl font-bold text-gray-600">Motivo:</h1>
+                                    </div>
+                                    <div className='lg:mr-8 mt-3'>
+                                        <span className="inline-block  text-xl text-gray-500 sm:mt-2 ml-2 sm:ml-4 font-semibold px-2 sm:px-3   ">
+                                            {motivo.nombre}
+                                        </span>
+                                    </div>
+                                </div>
+                            ) : (null)}
                         </div>
                         <div >
                             {citaEstado.id == 5 ? (

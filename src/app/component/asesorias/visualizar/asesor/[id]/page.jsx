@@ -12,6 +12,7 @@ function page({ params }) {
 
     const [showNoCancelar, setShowNoCancelar] = useState(false);
     const [cita, setCita] = useState([]);
+    const [motivoView, setMotivoView] = useState([]);
     const [semanaConst, setSemanaConst] = useState(['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'])
     const [diasConst, setDiasConst] = useState(['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'])
     const [semanaCancelar, setSemanaCancelar] = useState([])
@@ -74,6 +75,7 @@ function page({ params }) {
                 const response = await fetch(`https://td-g-production.up.railway.app/citas-asesoria-ppi/${params.id}`);
                 const data = await response.json();
                 setCita(data);
+                setMotivo(data.observacionCita)
                 setCitaEstado(data.estadoCita)
                 setNumeroDiaLunes(calcularNumeroDiaLunes(new Date(data.fecha)) + fechaPruebas.getDay())
                 setDia(new Date(data.fecha).getDay());
@@ -716,7 +718,18 @@ function page({ params }) {
                                     </ul>
                                 </div>
                             </div>
-
+                            {citaEstado.id == 4 ? (
+                                <div className="text-center mt-5 flex flex-col items-center">
+                                    <div>
+                                        <h1 className="text-2xl sm:text-3xl font-bold text-gray-600">Motivo:</h1>
+                                    </div>
+                                    <div className='lg:mr-8 mt-3'>
+                                        <span className="inline-block  text-xl text-gray-500 sm:mt-2 ml-2 sm:ml-4 font-semibold px-2 sm:px-3   ">
+                                            {motivo.nombre}
+                                        </span>
+                                    </div>
+                                </div>
+                            ) : (null)}
 
 
                         </div>

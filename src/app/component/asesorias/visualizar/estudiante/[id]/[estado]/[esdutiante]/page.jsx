@@ -18,6 +18,7 @@ function page({ params }) {
     const [fecha, setFecha] = useState('');
     const [hora, setHora] = useState('');
     const [salon, setSalon] = useState('');
+    const [motivo, setMotivo] = useState([]);
     const [fechaPruebas, setFechaPruebas] = useState(new Date());
     const router = useRouter();
     const [showAlertDelete, setShowAlertDelete] = useState(false);
@@ -62,6 +63,7 @@ function page({ params }) {
                     setEquipo(data.equipocita)
                     setEstadoCita(data.estadoCita)
                     setHora(formatTime(data.hora))
+                    setMotivo(data.observacionCita)
                     setFecha(formatDate(data.fecha))
                     setTipoCita(data.tipoCita)
                     setProfesor(data.usuariocitaequipo)
@@ -218,7 +220,7 @@ function page({ params }) {
                         <h1 className='text-4xl font-bold text-gray-600'>Cita de asesorías</h1>
                     </div>
                     <div className='p-5'>
-                        <div className='grid grid-cols-1 lg:grid-cols-3'>
+                        <div className={`grid grid-cols-1 ${estadoCita.id == 5?('lg:grid-cols-4'):('lg:grid-cols-3')}`}>
                             <div className="m-4 sm:m-10 text-center">
                                 <div>
                                     <h1 className="text-2xl  font-bold text-gray-600">Estado:</h1>
@@ -261,7 +263,8 @@ function page({ params }) {
                                 </div>
                                 <div>
                                     <span className="inline-block font-semibold text-2xl text-gray-500 sm:mt-2 ml-2 sm:ml-4 px-2 sm:px-3 py-1 ">
-                                        {tipoCita.nombre}       </span>
+                                        {tipoCita.nombre}
+                                    </span>
                                 </div>
                             </div>
                             <div className="m-4 sm:m-10 text-center">
@@ -286,6 +289,19 @@ function page({ params }) {
 
                                 </div>
                             </div>
+                            
+                            {estadoCita.id == 5 ? (
+                                    <div className="m-4 sm:m-10 text-center">
+                                        <div>
+                                            <h1 className="text-2xl  font-bold text-gray-600">Motivo:</h1>
+                                        </div>
+                                        <div>
+                                            <span className="inline-block font-semibold text-2xl text-gray-500 sm:mt-2 ml-2 sm:ml-4 px-2 sm:px-3 py-1 ">
+                                                {motivo.nombre}   </span>
+                                        </div>
+                                    </div>
+
+                                ) : (null)}
 
                         </div>
                         <div className="flex justify-center">
